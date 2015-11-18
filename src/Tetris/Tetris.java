@@ -2,6 +2,8 @@ package Tetris;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
@@ -11,7 +13,7 @@ import java.awt.image.BufferStrategy;
  */
 public class Tetris extends Canvas implements Runnable, KeyListener {
 
-    public static final int WIDTH = 400, HEIGHT = 540;
+    public static final int WIDTH = 400, HEIGHT = 565;
 
     public static void main(String args[]) {
         JFrame frame = new JFrame("Tetris");
@@ -19,8 +21,69 @@ public class Tetris extends Canvas implements Runnable, KeyListener {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
+        frame.setLayout(null);
+
+        JMenuBar bar = new JMenuBar();
+        bar.setBounds(0, 0, WIDTH, 25);
+
+        JMenu file = new JMenu("File");
+        file.setBounds(0, 0, 45, 24);
+
+        JMenuItem newGame = new JMenuItem("New Game");
+        newGame.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //Code for new game
+                System.out.println("Starting New Game...");
+            }
+        });
+        JMenuItem highScore = new JMenuItem("High Score");
+        highScore.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int highScore = 0; //replace with getHighScoreMethod later
+                JFrame alert = new JFrame("High Score");
+                alert.setSize(300, 150);
+                alert.setLayout(null);
+                alert.setLocationRelativeTo(null);
+
+                JLabel score = new JLabel("The highscore is: " + highScore);
+                score.setBounds(10, 0, 200, 50);
+
+                JButton okayButton = new JButton("Okay");
+                okayButton.setBounds(100, 80, 100, 30);
+                okayButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        alert.dispose();
+                    }
+                });
+
+                alert.add(score);
+                alert.add(okayButton);
+                alert.setResizable(false);
+                alert.setVisible(true);
+            }
+        });
+        JMenuItem exit = new JMenuItem("Exit");
+        exit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //Code for new game
+                System.out.println("Closing...");
+                System.exit(0);
+            }
+        });
+
         Tetris tetris = new Tetris();
+        tetris.setBounds(0, 25, WIDTH, HEIGHT - 25);
+
         frame.add(tetris);
+        file.add(newGame);
+        file.add(highScore);
+        file.add(exit);
+        bar.add(file);
+        frame.add(bar);
         frame.setVisible(true);
         tetris.start();
     }
