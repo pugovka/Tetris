@@ -3,6 +3,7 @@ package Tetris;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -10,10 +11,12 @@ import java.util.HashMap;
  */
 public class KeyGetter {
 
-    private static HashMap<Integer, String> keys;
+    public static HashMap<String, Integer> keys;
+    public static ArrayList<String> keyNames;
 
-    public  static  void loadKeys() {
-        keys = new HashMap<Integer, String>();
+    public static void loadKeys() {
+        keys = new HashMap<String, Integer>();
+        keyNames = new ArrayList<String>();
         Field[] fields = KeyEvent.class.getFields();
         for (Field f: fields) {
             if(Modifier.isStatic(f.getModifiers())) {
@@ -21,7 +24,8 @@ public class KeyGetter {
                     try {
                         int num = f.getInt(null);
                         String name = KeyEvent.getKeyText(num);
-                        keys.put(num, name);
+                        keys.put(name, num);
+                        keyNames.add(name);
                         System.out.println(name);
                         //keys.put(f.getInt(null), KeyEvent.getKeyText(f.getInt(null)));
                     }
