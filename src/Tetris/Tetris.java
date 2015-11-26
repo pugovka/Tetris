@@ -24,6 +24,12 @@ public class Tetris extends Canvas implements Runnable, KeyListener {
         frame.setLayout(null);
 
         KeyGetter.loadKeys();
+        try {
+            Config.loadConfig();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
 
         JMenuBar bar = new JMenuBar();
         bar.setBounds(0, 0, WIDTH, 25);

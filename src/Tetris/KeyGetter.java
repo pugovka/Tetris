@@ -26,7 +26,6 @@ public class KeyGetter {
                         String name = KeyEvent.getKeyText(num);
                         keys.put(name, num);
                         keyNames.add(name);
-                        System.out.println(name);
                         //keys.put(f.getInt(null), KeyEvent.getKeyText(f.getInt(null)));
                     }
                     catch (Exception e) {

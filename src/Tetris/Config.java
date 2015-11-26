@@ -4,7 +4,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Scanner;
 
 /**
  * Created by Nat-nyan on 23.11.2015.
@@ -55,6 +60,12 @@ public class Config {
         Config.down = down.getSelectedItem();
         Config.rotate = rotate.getSelectedItem();
         Config.pause = pause.getSelectedItem();
+        try {
+            saveConfig();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static Choice addChoice(String name, JFrame options, int x, int y) {
@@ -80,5 +91,96 @@ public class Config {
             }
         }
         return result;
+    }
+
+    public static void loadConfig() throws IOException {
+        File directory = new File(getDefaultDirectory(), "/Tetris");
+        if(!directory.exists()) {
+            directory.mkdirs();
+        }
+        System.out.println(directory.getPath());
+        File config = new File(directory, "/config.txt");
+        if(!config.exists()) {
+            config.createNewFile();
+            System.out.println("File not found, saving defaults");
+            saveConfig();
+            return;
+        }
+        Scanner scaner = new Scanner(config);
+        HashMap<String, String> values = new HashMap<String, String>();
+        while (scaner.hasNextLine()) {
+            String[] entry = scaner.nextLine().split(":");
+            String key = entry[0];
+            String value = entry[1];
+            values.put(key, value);
+        }
+        if(values.size() != 5) {
+            System.out.println("Config is unusable, saving defaults");
+            saveConfig();
+            return;
+        }
+        if(
+            !values.containsKey("left") ||
+            !values.containsKey("right") ||
+            !values.containsKey("rotate") ||
+            !values.containsKey("down") ||
+            !values.containsKey("pause")
+        ) {
+            System.out.println("Invalid names if config, saving defaults");
+            saveConfig();
+            return;
+        }
+        String left = values.get("left");
+        String right = values.get("right");
+        String rotate = values.get("rotate");
+        String down = values.get("down");
+        String pause = values.get("pause");
+
+        if(
+            !(
+                getKeyNames().contains(left) &&
+                getKeyNames().contains(right) &&
+                getKeyNames().contains(rotate) &&
+                getKeyNames().contains(down) &&
+                getKeyNames().contains(pause)
+            )
+        ) {
+            System.out.println("Invalid key in config, saving defaults");
+            return;
+        }
+        Config.left = left;
+        Config.right = right;
+        Config.rotate = rotate;
+        Config.down = down;
+        Config.pause = pause;
+    }
+
+    public static void saveConfig() throws IOException {
+        File directory = new File(getDefaultDirectory(), "/Tetris");
+        if(!directory.exists()) {
+            directory.mkdirs();
+        }
+        File config = new File(directory, "/config.txt");
+        if(!config.exists()) {
+            config.createNewFile();
+        }
+        PrintWriter pw = new PrintWriter(config);
+        pw.println("right:" + right);
+        pw.println("left:" + left);
+        pw.println("rotate:" + rotate);
+        pw.println("down:" + down);
+        pw.println("pause:" + pause);
+        pw.close();
+    }
+
+    public static String getDefaultDirectory() {
+        String OS = System.getProperty("os.name").toUpperCase();
+        if(OS.contains("WIN")) {
+            return System.getenv("APPDATA");
+        }
+        if(OS.contains("MAC")) {
+            return System.getProperty("user.home") + "library/Application Support";
+        }
+        return System.getProperty("user.home");
     }
 }
