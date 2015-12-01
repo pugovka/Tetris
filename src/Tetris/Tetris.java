@@ -7,13 +7,16 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
+import java.io.IOException;
 
 /**
  * Created by Nat-nyan on 17.11.2015.
  */
-public class Tetris extends Canvas implements Runnable, KeyListener {
+public class Tetris extends Canvas implements Runnable {
 
     public static final int WIDTH = 400, HEIGHT = 565;
+    private Image[] tetrisBlocks;
+    Controller control;
 
     public static void main(String args[]) {
         JFrame frame = new JFrame("Tetris");
@@ -113,6 +116,7 @@ public class Tetris extends Canvas implements Runnable, KeyListener {
         t.start();
     }
     public void run() {
+        init();
         boolean running = true;
         while (running) {
             update();
@@ -128,11 +132,20 @@ public class Tetris extends Canvas implements Runnable, KeyListener {
     }
 
     public void init() {
-
+        control = new Controller(this);
+        this.addKeyListener(control);
+        requestFocus();
+        try {
+            tetrisBlocks = ImageLoader.loadImage("/tetris.png", 25);
+        }
+        catch (IOException e) {
+            System.out.println("Error loading in tetris.png");
+            System.exit(1);
+        }
     }
 
     public void update() {
-
+        System.out.println(control.left + " : " + control.right + " : " + control.rotate + " : " + control.down + " : " + control.pause);
     }
     public void render(Graphics2D graphics) {
         graphics.setColor(Color.BLACK);
@@ -140,15 +153,8 @@ public class Tetris extends Canvas implements Runnable, KeyListener {
         graphics.setColor(Color.WHITE);
         graphics.setFont((new Font("Calibri", Font.BOLD, 20)));
         graphics.drawString("TETRIS", 170, 50);
+        graphics.drawImage(tetrisBlocks[6], 100, 100, 25, 25, null);
 
     }
-    public void keyPressed(KeyEvent e) {
 
-    }
-    public void keyTyped(KeyEvent e) {
-
-    }
-    public void keyReleased(KeyEvent e) {
-
-    }
 }
