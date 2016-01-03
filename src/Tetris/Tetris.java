@@ -8,6 +8,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created by Nat-nyan on 17.11.2015.
@@ -17,9 +19,9 @@ public class Tetris extends Canvas implements Runnable {
     public static final int WIDTH = 400, HEIGHT = 565;
     private Image[] tetrisBlocks;
     Controller control;
+    public static JFrame frame = new JFrame("Tetris");
 
     public static void main(String args[]) {
-        JFrame frame = new JFrame("Tetris");
         frame.setSize(WIDTH, HEIGHT);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
@@ -118,15 +120,37 @@ public class Tetris extends Canvas implements Runnable {
     public void run() {
         init();
         boolean running = true;
+        String test = "";
+        int x = 0;
+        int y = 0;
         while (running) {
-            update();
             BufferStrategy buffer = getBufferStrategy();
             if(buffer == null) {
                 createBufferStrategy(3);
                 continue;
             }
             Graphics2D graphics = (Graphics2D) buffer.getDrawGraphics();
-            render(graphics);
+            System.out.println(x);
+            test = update(graphics);
+            render(graphics, x, y);
+            if (test == "left") {
+                x -= 10;
+                render(graphics, x, y);
+            }
+            if (test == "right") {
+                x += 10;
+                render(graphics, x, y);
+            }
+            if (test == "down") {
+                y += 10;
+                render(graphics, x, y);
+            }
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
             buffer.show();
         }
     }
@@ -144,17 +168,28 @@ public class Tetris extends Canvas implements Runnable {
         }
     }
 
-    public void update() {
-        System.out.println(control.left + " : " + control.right + " : " + control.rotate + " : " + control.down + " : " + control.pause);
+    public String update(Graphics2D graphics) {
+        String test = "";
+        //System.out.println(control.left + " : " + control.right + " : " + control.rotate + " : " + control.down + " : " + control.pause);
+        if (control.left) {
+            test = "left";
+        }
+        if (control.right) {
+            test = "right";
+        }
+        if (control.down) {
+            test = "down";
+        }
+        return test;
     }
-    public void render(Graphics2D graphics) {
+
+    public void render(Graphics2D graphics, int x, int y) {
         graphics.setColor(Color.BLACK);
         graphics.fillRect(0, 0, WIDTH, HEIGHT);
         graphics.setColor(Color.WHITE);
         graphics.setFont((new Font("Calibri", Font.BOLD, 20)));
         graphics.drawString("TETRIS", 170, 50);
-        graphics.drawImage(tetrisBlocks[6], 100, 100, 25, 25, null);
-
+        graphics.drawImage(tetrisBlocks[6], 100 + x, 100 + y, 25, 25, null);
     }
 
 }
