@@ -8,6 +8,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,6 +18,7 @@ import java.util.logging.Logger;
 public class Tetris extends Canvas implements Runnable {
 
     public static final int WIDTH = 400, HEIGHT = 565;
+    public static final int WAIT_TIME = 700;  // Number of milliseconds that the piece remains before going 1 block down
     private Image[] tetrisBlocks;
     Controller control;
     public static JFrame frame = new JFrame("Tetris");
@@ -243,6 +245,8 @@ public class Tetris extends Canvas implements Runnable {
 
     };
 
+    public static Board mBoard;
+
     //Displacement of the piece to the position where it is first drawn in the board when it is created
     public static int[][][] mPiecesInitialPosition = new int[][][] { //kind, rotation, position
                 /* Square */
@@ -409,15 +413,15 @@ public class Tetris extends Canvas implements Runnable {
             System.out.println(x);
             test = update(graphics);
             render(graphics, x, y);
-            if (test == "left") {
+            if (Objects.equals(test, "left")) {
                 x -= 10;
                 render(graphics, x, y);
             }
-            if (test == "right") {
+            if (Objects.equals(test, "right")) {
                 x += 10;
                 render(graphics, x, y);
             }
-            if (test == "down") {
+            if (Objects.equals(test, "down")) {
                 y += 10;
                 render(graphics, x, y);
             }
@@ -442,6 +446,8 @@ public class Tetris extends Canvas implements Runnable {
             System.out.println("Error loading in tetris.png");
             System.exit(1);
         }
+
+
     }
 
     public String update(Graphics2D graphics) {

@@ -16,7 +16,7 @@ public class Pieces {
     >> pY:            Vertical position in blocks
     ======================================
     */
-    public int GetBlockType(int pPiece, int pRotation, int pX, int pY) {
+    public int getBlockType(int pPiece, int pRotation, int pX, int pY) {
         return Tetris.mPieces [pPiece][pRotation][pX][pY];
     }
 
@@ -31,7 +31,7 @@ public class Pieces {
     >> pRotation: 1 of the 4 possible rotations
     ======================================
     */
-    public int GetXInitialPosition(int pPiece, int pRotation) {
+    public int getXInitialPosition(int pPiece, int pRotation) {
         return Tetris.mPiecesInitialPosition [pPiece][pRotation][0];
     }
 
@@ -46,7 +46,7 @@ public class Pieces {
     >> pRotation: 1 of the 4 possible rotations
     ======================================
     */
-    public int GetYInitialPosition(int pPiece, int pRotation) {
+    public int getYInitialPosition(int pPiece, int pRotation) {
         return Tetris.mPiecesInitialPosition [pPiece][pRotation][1];
     }
 }
