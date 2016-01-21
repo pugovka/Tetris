@@ -11,7 +11,7 @@ public class Board {
     public static final int BLOCK_SIZE = 16;
     public static int mBoard[][] = new int[BOARD_WIDTH][BOARD_HEIGHT];
     static Pieces mPieces;
-    static int mScreenHeight;
+    //static int mScreenHeight;
 
     /*
     ======================================
@@ -41,7 +41,7 @@ public class Board {
         for (int i1 = pX, i2 = 0; i1 < pX + PIECE_BLOCKS; i1++, i2++) {
             for (int j1 = pY, j2 = 0; j1 < pY + PIECE_BLOCKS; j1++, j2++) {
                 // Store only the blocks of the piece that are not holes
-                if (mPieces.getBlockType(pPiece, pRotation, j2, i2) != 0)
+                if (Pieces.getBlockType(pPiece, pRotation, j2, i2) != 0)
                     mBoard[i1][j1] = POS_FILLED;
             }
         }
@@ -133,7 +133,7 @@ public class Board {
     ======================================
     */
     public static int getYPosInPixels(int pPos) {
-        return ((mScreenHeight - (BLOCK_SIZE * BOARD_HEIGHT)) + (pPos * BLOCK_SIZE));
+        return ((Tetris.HEIGHT - (BLOCK_SIZE * BOARD_HEIGHT)) + (pPos * BLOCK_SIZE));
     }
 
     /*
@@ -149,18 +149,21 @@ public class Board {
     >> pRotation: 1 of the 4 possible rotations
     ======================================
     */
-    public static boolean isPosibleMovement(int pX, int pY, int pPiece, int pRotation) {
-        for (int i1 = pX, i2 = 0; i1 < pX + PIECE_BLOCKS; i1++, i2++) {
-            for (int j1 = pY, j2 = 0; j1 < pY + PIECE_BLOCKS; j1++, j2++) {
+    public static boolean isPossibleMovement(int piecePosX, int piecePosY, int pieceKind, int pieceRotation) {
+        for (int i1 = piecePosX, i2 = 0; i1 < piecePosX + PIECE_BLOCKS; i1++, i2++) {
+            for (int j1 = piecePosY, j2 = 0; j1 < piecePosY + PIECE_BLOCKS; j1++, j2++) {
                 // Check if the piece is outside the limits of the board
-                if (i1 < 0 || i1 < BOARD_WIDTH - 1 || j1 > BOARD_HEIGHT - 1) {
-                    if (mPieces.getBlockType(pPiece, pRotation, j2, i2) != 0)
+                if (i1 < 0 || i1 < Tetris.WIDTH - 1 || j1 > Tetris.HEIGHT - 1) {
+                    if (Pieces.getBlockType(pieceKind, pieceRotation, j2, i2) != 0)
+                    {
+                        System.out.println(piecePosY);
                         return false;
+                    }
                 }
 
                 // Check if the piece have collisioned with a block already stored in the map
                 if (j1 >= 0) {
-                    if ((mPieces.getBlockType(pPiece, pRotation, j2, i2)) != 0 &&
+                    if ((Pieces.getBlockType(pieceKind, pieceRotation, j2, i2)) != 0 &&
                             (!isFreeBlock(i1, j1)))
                         return false;
                 }
