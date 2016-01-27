@@ -1,17 +1,21 @@
 package Tetris;
 
+import java.awt.*;
+
 /**
  * Created by Nat-nyan on 04.01.2016.
  */
 public class Board {
-    public static final int BOARD_WIDTH = 10, BOARD_HEIGHT = 20;
+    // Board width and height in blocks
+    public static final int BOARD_WIDTH = 10, BOARD_HEIGHT = 40;
+    // Delimiters of a board
+    public static final int BOARD_LINE_WIDTH = 6;
     public static final int POS_FREE = 0, POS_FILLED = 1;
     public static final int PIECE_BLOCKS = 5;
-    public static final int BOARD_POSITION = 320;
+    public static final int BOARD_POSITION = 200;
+    // Width and height of each block of a piece
     public static final int BLOCK_SIZE = 16;
     public static int mBoard[][] = new int[BOARD_WIDTH][BOARD_HEIGHT];
-    static Pieces mPieces;
-    //static int mScreenHeight;
 
     /*
     ======================================
@@ -74,7 +78,7 @@ public class Board {
         //Moves all the upper lines one row down
         for (int j = pY; j > 0; j--) {
             for (int i = 0; i < BOARD_WIDTH; i++) {
-                mBoard[i][j] = mBoard[i][j-1];
+                mBoard[i][j] = mBoard[i][j - 1];
             }
         }
     }
@@ -120,7 +124,7 @@ public class Board {
     ======================================
     */
     public static int getXPosInPixels(int pPos) {
-        return ((BOARD_POSITION - (BLOCK_SIZE * BOARD_WIDTH / 2)) + (pPos * BLOCK_SIZE));
+        return ((BOARD_POSITION - (BLOCK_SIZE * (BOARD_WIDTH / 2))) + (pPos * BLOCK_SIZE));
     }
 
     /*
@@ -129,17 +133,17 @@ public class Board {
 
     Parameters:
 
-    >> pPos:  Horizontal position of the block in the board
+    >> pPos:  Vertical position of the block in the board
     ======================================
     */
     public static int getYPosInPixels(int pPos) {
-        return ((Tetris.HEIGHT - (BLOCK_SIZE * BOARD_HEIGHT)) + (pPos * BLOCK_SIZE));
+        return (Tetris.SCREEN_TOP_BORDER + (pPos * BLOCK_SIZE));
     }
 
     /*
     ======================================
     Check if the piece can be stored at this position without any collision
-    Returns true if the movement is  possible, false if it not possible
+    Returns true if the movement is possible, false if it not possible
 
     Parameters:
 
@@ -153,12 +157,9 @@ public class Board {
         for (int i1 = piecePosX, i2 = 0; i1 < piecePosX + PIECE_BLOCKS; i1++, i2++) {
             for (int j1 = piecePosY, j2 = 0; j1 < piecePosY + PIECE_BLOCKS; j1++, j2++) {
                 // Check if the piece is outside the limits of the board
-                if (i1 < 0 || i1 < Tetris.WIDTH - 1 || j1 > Tetris.HEIGHT - 1) {
+                if (i1 < 0 || i1 > BOARD_WIDTH - 1 || j1 > BOARD_HEIGHT - 1) {
                     if (Pieces.getBlockType(pieceKind, pieceRotation, j2, i2) != 0)
-                    {
-                        System.out.println(piecePosY);
                         return false;
-                    }
                 }
 
                 // Check if the piece have collisioned with a block already stored in the map
