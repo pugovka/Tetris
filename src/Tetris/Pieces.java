@@ -10,10 +10,8 @@ public class Pieces {
 
     Parameters:
 
-    >> pPiece:        Piece to draw
-    >> pRotation: 1 of the 4 possible rotations
-    >> pX:            Horizontal position in blocks
-    >> pY:            Vertical position in blocks
+    >> piecePosX:            Horizontal position in blocks
+    >> piecePosY:            Vertical position in blocks
     ======================================
     */
     public static int getBlockType(int pieceKind, int pieceRotation, int piecePosX, int piecePosY) {
@@ -24,11 +22,6 @@ public class Pieces {
     ======================================
     Returns the horizontal displacement of the piece that has to be applied in order to create it in the
     correct position.
-
-    Parameters:
-
-    >> pPiece:    Piece to draw
-    >> pRotation: 1 of the 4 possible rotations
     ======================================
     */
     public static int getXInitialPosition(int pieceKind, int pieceRotation) {
@@ -39,11 +32,6 @@ public class Pieces {
     ======================================
     Returns the vertical displacement of the piece that has to be applied in order to create it in the
     correct position.
-
-    Parameters:
-
-    >> pPiece:    Piece to draw
-    >> pRotation: 1 of the 4 possible rotations
     ======================================
     */
     public static int getYInitialPosition(int pieceKind, int pieceRotation) {

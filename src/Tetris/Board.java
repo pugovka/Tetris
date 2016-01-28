@@ -15,7 +15,7 @@ public class Board {
     public static final int BOARD_POSITION = 200;
     // Width and height of each block of a piece
     public static final int BLOCK_SIZE = 16;
-    public static int mBoard[][] = new int[BOARD_WIDTH][BOARD_HEIGHT];
+    public static int boardPos[][] = new int[BOARD_WIDTH][BOARD_HEIGHT];
 
     /*
     ======================================
@@ -25,7 +25,7 @@ public class Board {
     public static void initBoard() {
         for (int i = 0; i < BOARD_WIDTH; i++)
             for (int j = 0; j < BOARD_HEIGHT; j++)
-                mBoard[i][j] = POS_FREE;
+                boardPos[i][j] = POS_FREE;
     }
 
     /*
@@ -46,7 +46,7 @@ public class Board {
             for (int j1 = pY, j2 = 0; j1 < pY + PIECE_BLOCKS; j1++, j2++) {
                 // Store only the blocks of the piece that are not holes
                 if (Pieces.getBlockType(pPiece, pRotation, j2, i2) != 0)
-                    mBoard[i1][j1] = POS_FILLED;
+                    boardPos[i1][j1] = POS_FILLED;
             }
         }
     }
@@ -61,7 +61,7 @@ public class Board {
     public static boolean isGameOver() {
         //If the first line has blocks, then, game over
         for (int i = 0; i < BOARD_WIDTH; i++)
-            if (mBoard[i][0] == POS_FILLED) return true;
+            if (boardPos[i][0] == POS_FILLED) return true;
         return false;
     }
 
@@ -78,7 +78,7 @@ public class Board {
         //Moves all the upper lines one row down
         for (int j = pY; j > 0; j--) {
             for (int i = 0; i < BOARD_WIDTH; i++) {
-                mBoard[i][j] = mBoard[i][j - 1];
+                boardPos[i][j] = boardPos[i][j - 1];
             }
         }
     }
@@ -92,7 +92,7 @@ public class Board {
         for (int j = 0; j < BOARD_HEIGHT; j++) {
             int i = 0;
             while (i < BOARD_WIDTH) {
-                if (mBoard[i][j] != POS_FILLED) break;
+                if (boardPos[i][j] != POS_FILLED) break;
                 i++;
             }
 
@@ -111,7 +111,7 @@ public class Board {
     ======================================
     */
     public static boolean isFreeBlock(int pX, int pY) {
-        return (mBoard[pX][pY] == POS_FREE);
+        return (boardPos[pX][pY] == POS_FREE);
     }
 
     /*

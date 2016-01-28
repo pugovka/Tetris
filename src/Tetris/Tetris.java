@@ -4,14 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
-import java.io.IOException;
-import java.util.Objects;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Created by Nat-nyan on 17.11.2015.
@@ -20,10 +14,10 @@ public class Tetris extends Canvas implements Runnable {
 
     public static final int SCREEN_WIDTH = 400, SCREEN_HEIGHT = 760;
     public static final int SCREEN_TOP_BORDER = 30;
-    // Number of milliseconds that the piece remains before going 1 block down
-    public static final int WAIT_TIME = 700;
     Controller control;
+    public Thread mainThread;
     public static JFrame frame = new JFrame("Tetris");
+    public static boolean running = true;
 
     // Pieces definition
     public static char[][][][] piecesArray = new char[][][][] {
@@ -260,8 +254,6 @@ public class Tetris extends Canvas implements Runnable {
 
     private static Random random = new Random();
 
-    public static int screenHeight = 700;//(int) screenSize.getHeight();
-
     // Displacement of the piece to the position where it is first drawn in the board when it is created
     public static int[][][] piecesInitialPosition = new int[][][] {
         // kind, rotation, position
@@ -317,7 +309,6 @@ public class Tetris extends Canvas implements Runnable {
     };
 
     public static void main(String args[]) {
-
         frame.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
@@ -409,17 +400,17 @@ public class Tetris extends Canvas implements Runnable {
     }
 
     public void start() {
-        Thread t = new Thread(this);
-        t.setPriority(Thread.MAX_PRIORITY);
-        t.start();
+        mainThread = new Thread(this);
+        mainThread.setPriority(Thread.MAX_PRIORITY);
+        mainThread.start();
     }
 
     public void run() {
         init();
         createNewPiece();
-        while (true) {
+        while (running) {
             BufferStrategy buffer = getBufferStrategy();
-            if(buffer == null) {
+            if (buffer == null) {
                 createBufferStrategy(3);
                 continue;
             }
@@ -428,35 +419,21 @@ public class Tetris extends Canvas implements Runnable {
 
             render(graphics);
 
-            if (control.right) {
-                if(Board.isPossibleMovement(piecePosX + 1, piecePosY, pieceKind, pieceRotation))
-                    piecePosX++;
-            } else if (control.left) {
-                if(Board.isPossibleMovement(piecePosX - 1, piecePosY, pieceKind, pieceRotation))
-                    piecePosX--;
-            } else if (control.down) {
-                if(Board.isPossibleMovement(piecePosX, piecePosY + 1, pieceKind, pieceRotation))
-                    piecePosY++;
-            } else if (control.rotate) {
-                if(Board.isPossibleMovement(piecePosX, piecePosY, pieceKind, (pieceRotation + 1) % 4))
-                    pieceRotation = (pieceRotation + 1) % 4;
-            }
-
-            if(Board.isPossibleMovement(piecePosX, piecePosY + 1, pieceKind, pieceRotation))
+            if (Board.isPossibleMovement(piecePosX, piecePosY + 1, pieceKind, pieceRotation))
                 piecePosY++;
             else {
                 Board.storePiece(piecePosX, piecePosY, pieceKind, pieceRotation);
                 Board.deletePossibleLines();
 
-                if (Board.isGameOver()) {
+                /*if (Board.isGameOver()) {
                     return;
-                }
+                }*/
 
                 createNewPiece();
             }
 
             try {
-                Thread.sleep(100);
+                Thread.sleep(150);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -562,8 +539,15 @@ public class Tetris extends Canvas implements Runnable {
     public void render(Graphics2D graphics) {
         graphics.setColor(Color.BLACK);
         graphics.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-        //System.out.println(piecePosX + " " + piecePosY + " " + piece + " " + pieceRotation);
         drawScene(graphics);
+    }
+
+    public static void pause() throws InterruptedException {
+        running = false;
+    }
+
+    public static void resume() {
+        running = true;
     }
 
 }
