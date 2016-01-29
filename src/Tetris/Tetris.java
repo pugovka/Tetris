@@ -17,7 +17,7 @@ public class Tetris extends Canvas implements Runnable {
     Controller control;
     public Thread mainThread;
     public static JFrame frame = new JFrame("Tetris");
-    public static boolean running = true;
+    public static volatile boolean running = true;
 
     // Pieces definition
     public static char[][][][] piecesArray = new char[][][][] {
@@ -403,11 +403,13 @@ public class Tetris extends Canvas implements Runnable {
         mainThread = new Thread(this);
         mainThread.setPriority(Thread.MAX_PRIORITY);
         mainThread.start();
+        Board.initBoard();
     }
-
+    @Override
     public void run() {
         init();
         createNewPiece();
+
         while (running) {
             BufferStrategy buffer = getBufferStrategy();
             if (buffer == null) {
@@ -425,9 +427,9 @@ public class Tetris extends Canvas implements Runnable {
                 Board.storePiece(piecePosX, piecePosY, pieceKind, pieceRotation);
                 Board.deletePossibleLines();
 
-                /*if (Board.isGameOver()) {
-                    return;
-                }*/
+                if (Board.isGameOver()) {
+                    System.out.println("Game over");
+                }
 
                 createNewPiece();
             }

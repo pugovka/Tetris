@@ -39,10 +39,10 @@ public class Controller extends KeyAdapter {
                     e1.printStackTrace();
                 }
             }
-            else
-            {
+            else {
                 System.out.println(Tetris.running);
                 Tetris.resume();
+                System.out.println(Tetris.running);
             }
 
         }

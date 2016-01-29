@@ -1,7 +1,5 @@
 package Tetris;
 
-import java.awt.*;
-
 /**
  * Created by Nat-nyan on 04.01.2016.
  */
@@ -34,18 +32,18 @@ public class Board {
 
     Parameters:
 
-    >> pX:        Horizontal position in blocks
-    >> pY:        Vertical position in blocks
-    >> pPiece:    Piece to draw
-    >> pRotation: 1 of the 4 possible rotations
+    >> piecePosX:        Horizontal position in blocks
+    >> piecePosY:        Vertical position in blocks
+    >> pieceKind:    Piece to draw
+    >> pieceRotation: 1 of the 4 possible rotations
     ======================================
     */
-    public static void storePiece(int pX, int pY, int pPiece, int pRotation) {
+    public static void storePiece(int piecePosX, int piecePosY, int pieceKind, int pieceRotation) {
         // Store each block of the piece into the board
-        for (int i1 = pX, i2 = 0; i1 < pX + PIECE_BLOCKS; i1++, i2++) {
-            for (int j1 = pY, j2 = 0; j1 < pY + PIECE_BLOCKS; j1++, j2++) {
+        for (int i1 = piecePosX, i2 = 0; i1 < piecePosX + PIECE_BLOCKS; i1++, i2++) {
+            for (int j1 = piecePosY, j2 = 0; j1 < piecePosY + PIECE_BLOCKS; j1++, j2++) {
                 // Store only the blocks of the piece that are not holes
-                if (Pieces.getBlockType(pPiece, pRotation, j2, i2) != 0)
+                if (Pieces.getBlockType(pieceKind, pieceRotation, j2, i2) != 0)
                     boardPos[i1][j1] = POS_FILLED;
             }
         }
@@ -71,12 +69,12 @@ public class Board {
 
     Parameters:
 
-    >> pY:        Vertical position in blocks of the line to delete
+    >> piecePosY:        Vertical position in blocks of the line to delete
     ======================================
     */
-    public static void deleteLine(int pY) {
+    public static void deleteLine(int piecePosY) {
         //Moves all the upper lines one row down
-        for (int j = pY; j > 0; j--) {
+        for (int j = piecePosY; j > 0; j--) {
             for (int i = 0; i < BOARD_WIDTH; i++) {
                 boardPos[i][j] = boardPos[i][j - 1];
             }
@@ -106,12 +104,12 @@ public class Board {
 
     Parameters:
 
-    >> pX:        Horizontal position in blocks
-    >> pY:        Vertical position in blocks
+    >> piecePosX:        Horizontal position in blocks
+    >> piecePosY:        Vertical position in blocks
     ======================================
     */
-    public static boolean isFreeBlock(int pX, int pY) {
-        return (boardPos[pX][pY] == POS_FREE);
+    public static boolean isFreeBlock(int piecePosX, int piecePosY) {
+        return (boardPos[piecePosX][piecePosY] == POS_FREE);
     }
 
     /*
@@ -120,11 +118,11 @@ public class Board {
 
     Parameters:
 
-    >> pPos:  Horizontal position of the block in the board
+    >> piecePosX:  Horizontal position of the block in the board
     ======================================
     */
-    public static int getXPosInPixels(int pPos) {
-        return ((BOARD_POSITION - (BLOCK_SIZE * (BOARD_WIDTH / 2))) + (pPos * BLOCK_SIZE));
+    public static int getXPosInPixels(int piecePosX) {
+        return ((BOARD_POSITION - (BLOCK_SIZE * (BOARD_WIDTH / 2))) + (piecePosX * BLOCK_SIZE));
     }
 
     /*
@@ -133,11 +131,11 @@ public class Board {
 
     Parameters:
 
-    >> pPos:  Vertical position of the block in the board
+    >> piecePosY:  Vertical position of the block in the board
     ======================================
     */
-    public static int getYPosInPixels(int pPos) {
-        return (Tetris.SCREEN_TOP_BORDER + (pPos * BLOCK_SIZE));
+    public static int getYPosInPixels(int piecePosY) {
+        return (Tetris.SCREEN_TOP_BORDER + (piecePosY * BLOCK_SIZE));
     }
 
     /*
@@ -147,10 +145,10 @@ public class Board {
 
     Parameters:
 
-    >> pX:        Horizontal position in blocks
-    >> pY:        Vertical position in blocks
-    >> pPiece:    Piece to draw
-    >> pRotation: 1 of the 4 possible rotations
+    >> piecePosX:        Horizontal position in blocks
+    >> piecePosY:        Vertical position in blocks
+    >> pieceKind:    Piece to draw
+    >> pieceRotation: 1 of the 4 possible rotations
     ======================================
     */
     public static boolean isPossibleMovement(int piecePosX, int piecePosY, int pieceKind, int pieceRotation) {
