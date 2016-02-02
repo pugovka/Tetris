@@ -11,302 +11,21 @@ import java.util.Random;
  * Created by Nat-nyan on 17.11.2015.
  */
 public class Tetris extends Canvas implements Runnable {
-
     public static final int SCREEN_WIDTH = 400, SCREEN_HEIGHT = 760;
     public static final int SCREEN_TOP_BORDER = 30;
-    Controller control;
+    private Controller control;
     public Thread mainThread;
     public static JFrame frame = new JFrame("Tetris");
-    public static volatile boolean running = true;
-
-    // Pieces definition
-    public static char[][][][] piecesArray = new char[][][][] {
-        // kind, rotations, horizontal blocks, vertical blocks
-            // square
-            {
-                    {
-                            {0, 0, 0, 0, 0},
-                            {0, 0, 0, 0, 0},
-                            {0, 0, 2, 1, 0},
-                            {0, 0, 1, 1, 0},
-                            {0, 0, 0, 0, 0}
-                    },
-                    {
-                            {0, 0, 0, 0, 0},
-                            {0, 0, 0, 0, 0},
-                            {0, 0, 2, 1, 0},
-                            {0, 0, 1, 1, 0},
-                            {0, 0, 0, 0, 0}
-                    },
-                    {
-                            {0, 0, 0, 0, 0},
-                            {0, 0, 0, 0, 0},
-                            {0, 0, 2, 1, 0},
-                            {0, 0, 1, 1, 0},
-                            {0, 0, 0, 0, 0}
-                    },
-                    {
-                            {0, 0, 0, 0, 0},
-                            {0, 0, 0, 0, 0},
-                            {0, 0, 2, 1, 0},
-                            {0, 0, 1, 1, 0},
-                            {0, 0, 0, 0, 0}
-                    }
-            },
-            // I
-            {
-                    {
-                            {0, 0, 0, 0, 0},
-                            {0, 0, 0, 0, 0},
-                            {0, 1, 2, 1, 1},
-                            {0, 0, 0, 0, 0},
-                            {0, 0, 0, 0, 0}
-                    },
-                    {
-                            {0, 0, 0, 0, 0},
-                            {0, 0, 1, 0, 0},
-                            {0, 0, 2, 0, 0},
-                            {0, 0, 1, 0, 0},
-                            {0, 0, 1, 0, 0}
-                    },
-                    {
-                            {0, 0, 0, 0, 0},
-                            {0, 0, 0, 0, 0},
-                            {1, 1, 2, 1, 0},
-                            {0, 0, 0, 0, 0},
-                            {0, 0, 0, 0, 0}
-                    },
-                    {
-                            {0, 0, 1, 0, 0},
-                            {0, 0, 1, 0, 0},
-                            {0, 0, 2, 0, 0},
-                            {0, 0, 1, 0, 0},
-                            {0, 0, 0, 0, 0}
-                    },
-            },
-            // L
-            {
-                    {
-                            {0, 0, 0, 0, 0},
-                            {0, 0, 1, 0, 0},
-                            {0, 0, 2, 0, 0},
-                            {0, 0, 1, 1, 0},
-                            {0, 0, 0, 0, 0}
-                    },
-                    {
-                            {0, 0, 0, 0, 0},
-                            {0, 0, 0, 0, 0},
-                            {0, 1, 2, 1, 0},
-                            {0, 1, 0, 0, 0},
-                            {0, 0, 0, 0, 0}
-                    },
-                    {
-                            {0, 0, 0, 0, 0},
-                            {0, 1, 1, 0, 0},
-                            {0, 0, 2, 0, 0},
-                            {0, 0, 1, 0, 0},
-                            {0, 0, 0, 0, 0}
-                    },
-                    {
-                            {0, 0, 0, 0, 0},
-                            {0, 0, 0, 1, 0},
-                            {0, 1, 2, 1, 0},
-                            {0, 0, 0, 0, 0},
-                            {0, 0, 0, 0, 0}
-                    },
-            },
-            // L mirrored
-            {
-                    {
-                            {0, 0, 0, 0, 0},
-                            {0, 0, 1, 0, 0},
-                            {0, 0, 2, 0, 0},
-                            {0, 1, 1, 0, 0},
-                            {0, 0, 0, 0, 0}
-                    },
-                    {
-                            {0, 0, 0, 0, 0},
-                            {0, 1, 0, 0, 0},
-                            {0, 1, 2, 1, 0},
-                            {0, 0, 0, 0, 0},
-                            {0, 0, 0, 0, 0}
-                    },
-                    {
-                            {0, 0, 0, 0, 0},
-                            {0, 0, 1, 1, 0},
-                            {0, 0, 2, 0, 0},
-                            {0, 0, 1, 0, 0},
-                            {0, 0, 0, 0, 0}
-                    },
-                    {
-                            {0, 0, 0, 0, 0},
-                            {0, 0, 0, 0, 0},
-                            {0, 1, 2, 1, 0},
-                            {0, 0, 0, 1, 0},
-                            {0, 0, 0, 0, 0}
-                    },
-            },
-            // N
-            {
-                    {
-                            {0, 0, 0, 0, 0},
-                            {0, 0, 0, 1, 0},
-                            {0, 0, 2, 1, 0},
-                            {0, 0, 1, 0, 0},
-                            {0, 0, 0, 0, 0}
-                    },
-                    {
-                            {0, 0, 0, 0, 0},
-                            {0, 0, 0, 0, 0},
-                            {0, 1, 2, 0, 0},
-                            {0, 0, 1, 1, 0},
-                            {0, 0, 0, 0, 0}
-                    },
-                    {
-                            {0, 0, 0, 0, 0},
-                            {0, 0, 1, 0, 0},
-                            {0, 1, 2, 0, 0},
-                            {0, 1, 0, 0, 0},
-                            {0, 0, 0, 0, 0}
-                    },
-                    {
-                            {0, 0, 0, 0, 0},
-                            {0, 1, 1, 0, 0},
-                            {0, 0, 2, 1, 0},
-                            {0, 0, 0, 0, 0},
-                            {0, 0, 0, 0, 0}
-                    },
-            },
-            // N mirrored
-            {
-                    {
-                            {0, 0, 0, 0, 0},
-                            {0, 0, 1, 0, 0},
-                            {0, 0, 2, 1, 0},
-                            {0, 0, 0, 1, 0},
-                            {0, 0, 0, 0, 0}
-                    },
-                    {
-                            {0, 0, 0, 0, 0},
-                            {0, 0, 0, 0, 0},
-                            {0, 0, 2, 1, 0},
-                            {0, 1, 1, 0, 0},
-                            {0, 0, 0, 0, 0}
-                    },
-                    {
-                            {0, 0, 0, 0, 0},
-                            {0, 1, 0, 0, 0},
-                            {0, 1, 2, 0, 0},
-                            {0, 0, 1, 0, 0},
-                            {0, 0, 0, 0, 0}
-                    },
-                    {
-                            {0, 0, 0, 0, 0},
-                            {0, 0, 1, 1, 0},
-                            {0, 1, 2, 0, 0},
-                            {0, 0, 0, 0, 0},
-                            {0, 0, 0, 0, 0}
-                    },
-            },
-            // T
-            {
-                    {
-                            {0, 0, 0, 0, 0},
-                            {0, 0, 1, 0, 0},
-                            {0, 0, 2, 1, 0},
-                            {0, 0, 1, 0, 0},
-                            {0, 0, 0, 0, 0}
-                    },
-                    {
-                            {0, 0, 0, 0, 0},
-                            {0, 0, 0, 0, 0},
-                            {0, 1, 2, 1, 0},
-                            {0, 0, 1, 0, 0},
-                            {0, 0, 0, 0, 0}
-                    },
-                    {
-                            {0, 0, 0, 0, 0},
-                            {0, 0, 1, 0, 0},
-                            {0, 1, 2, 0, 0},
-                            {0, 0, 1, 0, 0},
-                            {0, 0, 0, 0, 0}
-                    },
-                    {
-                            {0, 0, 0, 0, 0},
-                            {0, 0, 1, 0, 0},
-                            {0, 1, 2, 1, 0},
-                            {0, 0, 0, 0, 0},
-                            {0, 0, 0, 0, 0}
-                    },
-            },
-
-    };
-
+    public static boolean running = true;
     public static int pieceKind;
     public static int pieceRotation;
     public static int piecePosX;
     public static int piecePosY;
-
     private static int nextPieceKind;
     private static int nextPieceRotation;
     private static int nextPiecePosX;
     private static int nextPiecePosY;
-
     private static Random random = new Random();
-
-    // Displacement of the piece to the position where it is first drawn in the board when it is created
-    public static int[][][] piecesInitialPosition = new int[][][] {
-        // kind, rotation, position
-                /* Square */
-            {
-                    {-2, -3},
-                    {-2, -3},
-                    {-2, -3},
-                    {-2, -3}
-            },
-                /* I */
-            {
-                    {-2, -2},
-                    {-2, -3},
-                    {-2, -2},
-                    {-2, -3}
-            },
-                /* L */
-            {
-                    {-2, -3},
-                    {-2, -3},
-                    {-2, -3},
-                    {-2, -2}
-            },
-                /* L mirrored */
-            {
-                    {-2, -3},
-                    {-2, -2},
-                    {-2, -3},
-                    {-2, -3}
-            },
-                /* N */
-            {
-                    {-2, -3},
-                    {-2, -3},
-                    {-2, -3},
-                    {-2, -2}
-            },
-                /* N mirrored */
-            {
-                    {-2, -3},
-                    {-2, -3},
-                    {-2, -3},
-                    {-2, -2}
-            },
-                /* T */
-            {
-                    {-2, -3},
-                    {-2, -3},
-                    {-2, -3},
-                    {-2, -2}
-            }
-    };
 
     public static void main(String args[]) {
         frame.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -314,14 +33,6 @@ public class Tetris extends Canvas implements Runnable {
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
         frame.setLayout(null);
-
-        KeyGetter.loadKeys();
-        try {
-            Config.loadConfig();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
 
         JMenuBar bar = new JMenuBar();
         bar.setBounds(0, 0, SCREEN_WIDTH, 25);
@@ -377,21 +88,12 @@ public class Tetris extends Canvas implements Runnable {
             }
         });
 
-        JMenuItem options = new JMenuItem("Options");
-        options.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Config.openConfig(frame);
-            }
-        });
-
         Tetris tetris = new Tetris();
         tetris.setBounds(0, 25, SCREEN_WIDTH, SCREEN_HEIGHT - 25);
 
         frame.add(tetris);
         file.add(newGame);
         file.add(highScore);
-        file.add(options);
         file.add(exit);
         bar.add(file);
         frame.add(bar);
@@ -410,7 +112,7 @@ public class Tetris extends Canvas implements Runnable {
         init();
         createNewPiece();
 
-        while (running) {
+        while (true) {
             BufferStrategy buffer = getBufferStrategy();
             if (buffer == null) {
                 createBufferStrategy(3);
@@ -420,26 +122,19 @@ public class Tetris extends Canvas implements Runnable {
             Graphics2D graphics = (Graphics2D) buffer.getDrawGraphics();
 
             render(graphics);
-
-            if (Board.isPossibleMovement(piecePosX, piecePosY + 1, pieceKind, pieceRotation))
-                piecePosY++;
-            else {
-                Board.storePiece(piecePosX, piecePosY, pieceKind, pieceRotation);
-                Board.deletePossibleLines();
-
-                if (Board.isGameOver()) {
-                    System.out.println("Game over");
+            if (elapsed() && running) {
+                if (Board.isPossibleMovement(piecePosX, piecePosY + 1, pieceKind, pieceRotation)) {
+                    piecePosY++;
+                } else {
+                    Board.storePiece(piecePosX, piecePosY, pieceKind, pieceRotation);
+                    Board.deletePossibleLines();
+                    if (Board.isGameOver()) {
+                        System.out.println("Game over");
+                    }
+                    createNewPiece();
                 }
-
-                createNewPiece();
+                time = System.nanoTime();
             }
-
-            try {
-                Thread.sleep(150);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
             buffer.show();
         }
     }
@@ -522,9 +217,9 @@ public class Tetris extends Canvas implements Runnable {
 
         // Rectangles that delimits the board
         boardXLimit1++;
-        graphics.setColor(Color.RED);
         for (int i = 0; i < Board.BOARD_WIDTH; i++) {
             for (int j = 0; j < Board.BOARD_HEIGHT; j++) {
+                graphics.setColor(new Color(Math.min(i * i * 10, 255), Math.min(j * 25, 255), Math.min(i * j, 255)));
                 // Check if the block is filled, if so, draw it
                 if (!Board.isFreeBlock(i, j)) {
                     graphics.fillRect(
@@ -552,4 +247,16 @@ public class Tetris extends Canvas implements Runnable {
         running = true;
     }
 
+    private long time = System.nanoTime();
+
+    private boolean elapsed() {
+        return System.nanoTime() - time > 250000000;
+    }
+
+    public static void movePiece(int x, int y) {
+        if (Board.isPossibleMovement(Tetris.piecePosX + x, Tetris.piecePosY + y, Tetris.pieceKind, Tetris.pieceRotation)) {
+            Tetris.piecePosX += x;
+            Tetris.piecePosY += y;
+        }
+    }
 }

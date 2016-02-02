@@ -2,6 +2,8 @@ package Tetris;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 /**
  * Created by Nat-nyan on 01.12.2015.
@@ -15,36 +17,35 @@ public class Controller extends KeyAdapter {
     }
 
     public void keyPressed(KeyEvent e) {
-        if (KeyEvent.getKeyText(e.getKeyCode()).equals(Config.left)) {
-            if (Board.isPossibleMovement(Tetris.piecePosX - 1, Tetris.piecePosY, Tetris.pieceKind, Tetris.pieceRotation))
-                Tetris.piecePosX--;
-        }
-        if (KeyEvent.getKeyText(e.getKeyCode()).equals(Config.right)) {
-            if (Board.isPossibleMovement(Tetris.piecePosX + 1, Tetris.piecePosY, Tetris.pieceKind, Tetris.pieceRotation))
-                Tetris.piecePosX++;
-        }
-        if (KeyEvent.getKeyText(e.getKeyCode()).equals(Config.rotate)) {
-            if (Board.isPossibleMovement(Tetris.piecePosX, Tetris.piecePosY, Tetris.pieceKind, (Tetris.pieceRotation + 1) % 4))
-                Tetris.pieceRotation = (Tetris.pieceRotation + 1) % 4;
-        }
-        if (KeyEvent.getKeyText(e.getKeyCode()).equals(Config.down)) {
-            if (Board.isPossibleMovement(Tetris.piecePosX, Tetris.piecePosY + 1, Tetris.pieceKind, Tetris.pieceRotation))
-                Tetris.piecePosY++;
-        }
-        if (KeyEvent.getKeyText(e.getKeyCode()).equals(Config.pause)) {
-            if (Tetris.running) {
-                try {
-                    Tetris.pause();
-                } catch (InterruptedException e1) {
-                    e1.printStackTrace();
+        BiConsumer<Integer, Integer> biConsumer = Tetris::movePiece;
+        switch (e.getKeyCode()) {
+            case (KeyEvent.VK_LEFT):
+                biConsumer.accept(-1, 0);
+                break;
+            case (KeyEvent.VK_RIGHT):
+                biConsumer.accept(1, 0);
+                break;
+            case (KeyEvent.VK_DOWN):
+                biConsumer.accept(0, 1);
+                break;
+            case (KeyEvent.VK_UP):
+                if (Board.isPossibleMovement(Tetris.piecePosX, Tetris.piecePosY, Tetris.pieceKind, (Tetris.pieceRotation + 1) % 4)) {
+                    Tetris.pieceRotation = (Tetris.pieceRotation + 1) % 4;
                 }
-            }
-            else {
-                System.out.println(Tetris.running);
-                Tetris.resume();
-                System.out.println(Tetris.running);
-            }
-
+                break;
+            case (KeyEvent.VK_P):
+                if (Tetris.running) {
+                    try {
+                        Tetris.pause();
+                    } catch (InterruptedException e1) {
+                        e1.printStackTrace();
+                    }
+                } else {
+                    Tetris.resume();
+                }
+                break;
+            default:
+                break;
         }
     }
 }

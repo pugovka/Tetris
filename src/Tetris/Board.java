@@ -21,9 +21,11 @@ public class Board {
     ======================================
     */
     public static void initBoard() {
-        for (int i = 0; i < BOARD_WIDTH; i++)
-            for (int j = 0; j < BOARD_HEIGHT; j++)
+        for (int i = 0; i < BOARD_WIDTH; i++) {
+            for (int j = 0; j < BOARD_HEIGHT; j++) {
                 boardPos[i][j] = POS_FREE;
+            }
+        }
     }
 
     /*
