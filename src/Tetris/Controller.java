@@ -18,6 +18,7 @@ public class Controller extends KeyAdapter {
 
     public void keyPressed(KeyEvent e) {
         BiConsumer<Integer, Integer> biConsumer = Tetris::movePiece;
+
         switch (e.getKeyCode()) {
             case (KeyEvent.VK_LEFT):
                 biConsumer.accept(-1, 0);
