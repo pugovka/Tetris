@@ -30,7 +30,10 @@ public class Controller extends KeyAdapter {
                 biConsumer.accept(0, 1);
                 break;
             case (KeyEvent.VK_UP):
-                if (Board.isPossibleMovement(Tetris.piecePosX, Tetris.piecePosY, Tetris.pieceKind, (Tetris.pieceRotation + 1) % 4)) {
+                if (!Board.isPossibleMovement(Tetris.piecePosX, Tetris.piecePosY, Tetris.pieceKind, (Tetris.pieceRotation + 1) % 4)) {
+                    Tetris.piecePosX = Tetris.piecePosX + Board.shiftRotatedPiece(Tetris.piecePosX, Tetris.piecePosY, Tetris.pieceKind, (Tetris.pieceRotation + 1) % 4);
+                    Tetris.pieceRotation = (Tetris.pieceRotation + 1) % 4;
+                } else {
                     Tetris.pieceRotation = (Tetris.pieceRotation + 1) % 4;
                 }
                 break;

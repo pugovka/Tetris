@@ -15,7 +15,7 @@ public class Pieces {
     ======================================
     */
     public static int getBlockType(int pieceKind, int pieceRotation, int piecePosX, int piecePosY) {
-        return piecesArray [pieceKind][pieceRotation][piecePosX][piecePosY];
+        return pieces [pieceKind][pieceRotation][piecePosX][piecePosY];
     }
 
     /*
@@ -41,7 +41,7 @@ public class Pieces {
     // Pieces definition
     // kind, rotations, horizontal blocks, vertical blocks
     // square
-    private static char[][][][] piecesArray = new char[][][][] {
+    private static char[][][][] pieces = new char[][][][] {
             {
                     {
                             {0, 0, 0, 0, 0},

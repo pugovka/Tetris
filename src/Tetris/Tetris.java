@@ -179,6 +179,12 @@ public class Tetris extends Canvas implements Runnable {
         // Travel the matrix of blocks of the piece and draw the blocks that are filled
         for (int i = 0; i < Board.PIECE_BLOCKS; i++ ) {
             for (int j = 0; j < Board.PIECE_BLOCKS; j++) {
+                switch (Pieces.getBlockType(pieceKind, pieceRotation, j, i)) {
+                    case 1: pieceColor = new Color(0, 255, 121); break;
+                    // Pivot color
+                    case 2: pieceColor = new Color(255, 250, 250); break;
+                }
+
                 graphics.setColor(pieceColor);
                 if (Pieces.getBlockType(pieceKind, pieceRotation, j, i) != 0) {
                     graphics.fillRect(

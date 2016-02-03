@@ -174,4 +174,32 @@ public class Board {
         // No collision
         return true;
     }
+
+    public static int shiftRotatedPiece(int piecePosX, int piecePosY, int pieceKind, int pieceRotation) {
+        for (int i1 = piecePosX, i2 = 0; i1 < piecePosX + PIECE_BLOCKS; i1++, i2++) {
+            for (int j1 = piecePosY, j2 = 0; j1 < piecePosY + PIECE_BLOCKS; j1++, j2++) {
+                // Check if the piece is outside the limits of the board
+                if (i1 < 0) {
+                    if (
+                        Pieces.getBlockType(pieceKind, pieceRotation, j2, i2) != 0 &&
+                        Pieces.getBlockType(pieceKind, pieceRotation, j2, i2) != 1
+                        ) {
+                        return 1;
+                    } else if (Pieces.getBlockType(pieceKind, pieceRotation, j2, i2) == 1) {
+                        return 2;
+                    }
+                } else if (i1 > BOARD_WIDTH - 1) {
+                    if (
+                        Pieces.getBlockType(pieceKind, pieceRotation, j2, i2) != 0 &&
+                        Pieces.getBlockType(pieceKind, pieceRotation, j2, i2) != 1
+                        ) {
+                        return -1;
+                    } else if (Pieces.getBlockType(pieceKind, pieceRotation, j2, i2) == 1) {
+                        return -2;
+                    }
+                }
+            }
+        }
+        return 0;
+    }
 }
