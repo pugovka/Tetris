@@ -130,6 +130,7 @@ public class Tetris extends Canvas implements Runnable {
                     Board.deletePossibleLines();
                     if (Board.isGameOver()) {
                         System.out.println("Game over");
+                        System.exit(0);
                     }
                     createNewPiece();
                 }
@@ -157,7 +158,7 @@ public class Tetris extends Canvas implements Runnable {
         nextPiecePosY = 25;
     }
 
-    public void createNewPiece() {
+    public static void createNewPiece() {
         // The new piece
         pieceKind = nextPieceKind;
         pieceRotation = nextPieceRotation;
@@ -260,9 +261,13 @@ public class Tetris extends Canvas implements Runnable {
     }
 
     public static void movePiece(int x, int y) {
-        if (Board.isPossibleMovement(Tetris.piecePosX + x, Tetris.piecePosY + y, Tetris.pieceKind, Tetris.pieceRotation)) {
-            Tetris.piecePosX += x;
-            Tetris.piecePosY += y;
+        if (Board.isPossibleMovement(piecePosX + x, piecePosY + y, pieceKind, pieceRotation)) {
+            if (x != 0) {
+                piecePosX += x;
+            }
+            if (y != 0) {
+                piecePosY += y;
+            }
         }
     }
 }

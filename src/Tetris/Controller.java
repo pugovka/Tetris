@@ -27,7 +27,18 @@ public class Controller extends KeyAdapter {
                 biConsumer.accept(1, 0);
                 break;
             case (KeyEvent.VK_DOWN):
-                biConsumer.accept(0, 1);
+                //biConsumer.accept(0, 2);
+                if (Board.isPossibleMovement(Tetris.piecePosX, Tetris.piecePosY + 1, Tetris.pieceKind, Tetris.pieceRotation)) {
+                    Tetris.piecePosY++;
+                } else {
+                    Board.storePiece(Tetris.piecePosX, Tetris.piecePosY, Tetris.pieceKind, Tetris.pieceRotation);
+                    Board.deletePossibleLines();
+                    if (Board.isGameOver()) {
+                        System.out.println("Game over");
+                        System.exit(0);
+                    }
+                    Tetris.createNewPiece();
+                }
                 break;
             case (KeyEvent.VK_UP):
                 if (!Board.isPossibleMovement(Tetris.piecePosX, Tetris.piecePosY, Tetris.pieceKind, (Tetris.pieceRotation + 1) % 4)) {

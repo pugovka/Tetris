@@ -40,8 +40,8 @@ public class Pieces {
 
     // Pieces definition
     // kind, rotations, horizontal blocks, vertical blocks
-    // square
     private static char[][][][] pieces = new char[][][][] {
+            // square
             {
                     {
                             {0, 0, 0, 0, 0},
