@@ -45,7 +45,12 @@ public class Board {
             for (int j1 = piecePosY, j2 = 0; j1 < piecePosY + PIECE_BLOCKS; j1++, j2++) {
                 // Store only the blocks of the piece that are not holes
                 if (Pieces.getBlockType(pieceKind, pieceRotation, j2, i2) != 0) {
-                    boardPos[i1][j1] = POS_FILLED;
+                    if (j1 < 0) {
+                        System.out.println("Game over");
+                        System.exit(0);
+                    } else {
+                        boardPos[i1][j1] = POS_FILLED;
+                    }
                 }
             }
         }
