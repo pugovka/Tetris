@@ -1,7 +1,5 @@
 package Tetris;
 
-import java.awt.*;
-
 /**
  * Created by Nat-nyan on 04.01.2016.
  */
@@ -17,8 +15,6 @@ public class Board {
     public static final int BLOCK_SIZE = 16;
     public static int boardPos[][] = new int[BOARD_WIDTH][BOARD_HEIGHT];
 
-
-    // Init the board blocks with free positions
     public static void initBoard() {
         for (int i = 0; i < BOARD_WIDTH; i++) {
             for (int j = 0; j < BOARD_HEIGHT; j++) {
@@ -27,15 +23,10 @@ public class Board {
         }
     }
 
-    /*
-    ======================================
-    Parameters:
-
-    >> piecePosX:        Horizontal position in blocks
-    >> piecePosY:        Vertical position in blocks
-    >> pieceKind:    Piece to draw
-    >> pieceRotation: 1 of the 4 possible rotations
-    ======================================
+    /**
+    * Parameters:
+    * piecePosX:        horizontal position in blocks
+    * piecePosY:        vertical position in blocks
     */
 
     // Store a piece in the board by filling the blocks
@@ -61,14 +52,16 @@ public class Board {
     public static boolean isGameOver() {
         //If the first line has blocks, then, game over
         for (int i = 0; i < BOARD_WIDTH; i++) {
-            if (boardPos[i][0] == POS_FILLED) return true;
+            if (boardPos[i][0] == POS_FILLED) {
+                return true;
+            }
         }
         return false;
     }
 
     // Delete a line of the board by moving all above lines down
     public static void deleteLine(int piecePosY) {
-        //Moves all the upper lines one row down
+        // Moves all the upper lines one row down
         for (int j = piecePosY; j > 0; j--) {
             for (int i = 0; i < BOARD_WIDTH; i++) {
                 boardPos[i][j] = boardPos[i][j - 1];
@@ -81,7 +74,9 @@ public class Board {
         for (int j = 0; j < BOARD_HEIGHT; j++) {
             int i = 0;
             while (i < BOARD_WIDTH) {
-                if (boardPos[i][j] != POS_FILLED) break;
+                if (boardPos[i][j] != POS_FILLED) {
+                    break;
+                }
                 i++;
             }
 
@@ -92,20 +87,19 @@ public class Board {
     }
 
 
-    //Returns 1 (true) if the this block of the board is empty, 0 if it is filled
+    // Returns 1 (true) if the this block of the board is empty, 0 if it is filled
     public static boolean isFreeBlock(int piecePosX, int piecePosY) {
-        return (boardPos[piecePosX][piecePosY] == POS_FREE);
+        return boardPos[piecePosX][piecePosY] == POS_FREE;
     }
 
     // Returns the horizontal position (in pixels) of the block given like parameter
     public static int getXPosInPixels(int piecePosX) {
-        return ((BOARD_POSITION - (BLOCK_SIZE * (BOARD_WIDTH / 2))) + (piecePosX * BLOCK_SIZE));
+        return (BOARD_POSITION - (BLOCK_SIZE * (BOARD_WIDTH / 2))) + (piecePosX * BLOCK_SIZE);
     }
-
 
     // Returns the vertical position (in pixels) of the block given like parameter
     public static int getYPosInPixels(int piecePosY) {
-        return (Tetris.SCREEN_TOP_BORDER + (piecePosY * BLOCK_SIZE));
+        return Tetris.SCREEN_TOP_BORDER + (piecePosY * BLOCK_SIZE);
     }
 
     // Check if the piece can be stored at this position without any collision
@@ -119,7 +113,7 @@ public class Board {
                     }
                 }
 
-                // Check if the piece have collisioned with a block already stored in the map
+                // Check if the piece have a collision with a block already stored
                 if (j1 >= 0) {
                     if ((Pieces.getBlockType(pieceKind, pieceRotation, j2, i2)) != 0 &&
                             (!isFreeBlock(i1, j1))) {
@@ -131,34 +125,5 @@ public class Board {
 
         // No collision
         return true;
-    }
-
-    // Returns value for moving piece out from border
-    public static int shiftRotatedPiece(int piecePosX, int piecePosY, int pieceKind, int pieceRotation) {
-        for (int i1 = piecePosX, i2 = 0; i1 < piecePosX + PIECE_BLOCKS; i1++, i2++) {
-            for (int j1 = piecePosY, j2 = 0; j1 < piecePosY + PIECE_BLOCKS; j1++, j2++) {
-                // Check if the piece is outside the limits of the board
-                if (i1 < 0) {
-                    if (Pieces.getBlockType(pieceKind, pieceRotation, j2, i2) != 0) {
-                        // if I-piece
-                        if (pieceKind == 1) {
-                            return 2;
-                        } else {
-                            return 1;
-                        }
-                    }
-                } else if (i1 > BOARD_WIDTH - 1) {
-                    if (Pieces.getBlockType(pieceKind, pieceRotation, j2, i2) != 0) {
-                        // if I-piece
-                        if (pieceKind == 1) {
-                            return -2;
-                        } else {
-                            return -1;
-                        }
-                    }
-                }
-            }
-        }
-        return 0;
     }
 }

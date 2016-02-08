@@ -17,17 +17,15 @@ public class Controller extends KeyAdapter {
     }
 
     public void keyPressed(KeyEvent e) {
-        BiConsumer<Integer, Integer> biConsumer = Tetris::movePiece;
 
         switch (e.getKeyCode()) {
             case (KeyEvent.VK_LEFT):
-                biConsumer.accept(-1, 0);
+                Tetris.movePiece(-1);
                 break;
             case (KeyEvent.VK_RIGHT):
-                biConsumer.accept(1, 0);
+                Tetris.movePiece(1);
                 break;
             case (KeyEvent.VK_DOWN):
-                //biConsumer.accept(0, 2);
                 if (Board.isPossibleMovement(Tetris.piecePosX, Tetris.piecePosY + 1, Tetris.pieceKind, Tetris.pieceRotation)) {
                     Tetris.piecePosY++;
                 } else {
@@ -35,16 +33,12 @@ public class Controller extends KeyAdapter {
                     Board.deletePossibleLines();
                     if (Board.isGameOver()) {
                         System.out.println("Game over");
-                        System.exit(0);
                     }
                     Tetris.createNewPiece();
                 }
                 break;
             case (KeyEvent.VK_UP):
-                if (!Board.isPossibleMovement(Tetris.piecePosX, Tetris.piecePosY, Tetris.pieceKind, (Tetris.pieceRotation + 1) % 4)) {
-                    Tetris.piecePosX = Tetris.piecePosX + Board.shiftRotatedPiece(Tetris.piecePosX, Tetris.piecePosY, Tetris.pieceKind, (Tetris.pieceRotation + 1) % 4);
-                    Tetris.pieceRotation = (Tetris.pieceRotation + 1) % 4;
-                } else {
+                if (Board.isPossibleMovement(Tetris.piecePosX, Tetris.piecePosY, Tetris.pieceKind, (Tetris.pieceRotation + 1) % 4)) {
                     Tetris.pieceRotation = (Tetris.pieceRotation + 1) % 4;
                 }
                 break;

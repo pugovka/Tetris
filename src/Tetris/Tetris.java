@@ -13,8 +13,6 @@ import java.util.Random;
 public class Tetris extends Canvas implements Runnable {
     public static final int SCREEN_WIDTH = 400, SCREEN_HEIGHT = 760;
     public static final int SCREEN_TOP_BORDER = 30;
-    private Controller control;
-    public Thread mainThread;
     public static JFrame frame = new JFrame("Tetris");
     public static boolean running = true;
     public static int pieceKind;
@@ -26,6 +24,8 @@ public class Tetris extends Canvas implements Runnable {
     private static int nextPiecePosX;
     private static int nextPiecePosY;
     private static Random random = new Random();
+    private static Color pieceColor;
+    private static Color nextPieceColor;
 
     public static void main(String args[]) {
         frame.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -34,55 +34,26 @@ public class Tetris extends Canvas implements Runnable {
         frame.setResizable(false);
         frame.setLayout(null);
 
-        JMenuBar bar = new JMenuBar();
-        bar.setBounds(0, 0, SCREEN_WIDTH, 25);
+        JMenuBar menuBar = new JMenuBar();
+        menuBar.setBounds(0, 0, SCREEN_WIDTH, 25);
 
-        JMenu file = new JMenu("File");
-        file.setBounds(0, 0, 45, 24);
+        JMenu menuItemFile = new JMenu("File");
+        menuItemFile.setBounds(0, 0, 45, 24);
 
-        JMenuItem newGame = new JMenuItem("New Game");
-        newGame.addActionListener(new ActionListener() {
+        JMenuItem menuItemNewGame = new JMenuItem("New Game");
+        menuItemNewGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //Code for new game
                 System.out.println("Starting New Game...");
-            }
-        });
-        JMenuItem highScore = new JMenuItem("High Score");
-        highScore.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int highScore = 0; //replace with getHighScoreMethod later
-                JFrame alert = new JFrame("High Score");
-                alert.setSize(300, 150);
-                alert.setLayout(null);
-                alert.setLocationRelativeTo(null);
-                //alert.setAlwaysOnTop(true);
-
-                JLabel score = new JLabel("The highscore is: " + highScore);
-                score.setBounds(10, 0, 200, 50);
-
-                JButton okayButton = new JButton("Okay");
-                okayButton.setBounds(100, 80, 100, 30);
-                okayButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        alert.dispose();
-                    }
-                });
-
-                alert.add(score);
-                alert.add(okayButton);
-                alert.setResizable(false);
-                alert.setVisible(true);
+                Board.initBoard();
+                createNewPiece();
             }
         });
 
-        JMenuItem exit = new JMenuItem("Exit");
-        exit.addActionListener(new ActionListener() {
+        JMenuItem menuItemExit = new JMenuItem("Exit");
+        menuItemExit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Code for new game
                 System.out.println("Closing...");
                 System.exit(0);
             }
@@ -92,19 +63,18 @@ public class Tetris extends Canvas implements Runnable {
         tetris.setBounds(0, 25, SCREEN_WIDTH, SCREEN_HEIGHT - 25);
 
         frame.add(tetris);
-        file.add(newGame);
-        file.add(highScore);
-        file.add(exit);
-        bar.add(file);
-        frame.add(bar);
+        menuItemFile.add(menuItemNewGame);
+        menuItemFile.add(menuItemExit);
+        menuBar.add(menuItemFile);
+        frame.add(menuBar);
         frame.setVisible(true);
         tetris.start();
     }
 
-    public void start() {
-        mainThread = new Thread(this);
-        mainThread.setPriority(Thread.MAX_PRIORITY);
-        mainThread.start();
+    private void start() {
+        Thread thread = new Thread(this);
+        thread.setPriority(Thread.MAX_PRIORITY);
+        thread.start();
         Board.initBoard();
     }
     @Override
@@ -115,7 +85,7 @@ public class Tetris extends Canvas implements Runnable {
         while (true) {
             BufferStrategy buffer = getBufferStrategy();
             if (buffer == null) {
-                createBufferStrategy(3);
+                createBufferStrategy(2);
                 continue;
             }
 
@@ -140,8 +110,8 @@ public class Tetris extends Canvas implements Runnable {
         }
     }
 
-    public void init() {
-        control = new Controller(this);
+    private void init() {
+        Controller control = new Controller(this);
         this.addKeyListener(control);
         requestFocus();
 
@@ -150,12 +120,14 @@ public class Tetris extends Canvas implements Runnable {
         pieceRotation = random.nextInt(3);
         piecePosX = (Board.BOARD_WIDTH / 2) + Pieces.getXInitialPosition(pieceKind, pieceRotation);
         piecePosY = Pieces.getYInitialPosition(pieceKind, pieceRotation);
+        pieceColor = new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255));
 
         // Next piece
         nextPieceKind = random.nextInt(6);
         nextPieceRotation = random.nextInt(3);
         nextPiecePosX = Board.BOARD_WIDTH + 1;
         nextPiecePosY = 25;
+        nextPieceColor = new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255));
     }
 
     public static void createNewPiece() {
@@ -164,14 +136,15 @@ public class Tetris extends Canvas implements Runnable {
         pieceRotation = nextPieceRotation;
         piecePosX = (Board.BOARD_WIDTH / 2) + Pieces.getXInitialPosition(pieceKind, pieceRotation);
         piecePosY = Pieces.getYInitialPosition(pieceKind, pieceRotation);
+        pieceColor = nextPieceColor;
 
         // Random next piece
         nextPieceKind = random.nextInt(6);
         nextPieceRotation = random.nextInt(3);
+        nextPieceColor = new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255));
     }
 
-    public void drawPiece(int posX, int posY, int pieceKind, int pieceRotation, Graphics2D graphics) {
-        Color pieceColor = new Color(0, 255, 121);
+    private void drawPiece(int posX, int posY, int pieceKind, int pieceRotation, Graphics2D graphics, Color pieceColor) {
 
         // Obtain the position in pixel in the screen of the block we want to draw
         int posPixelsX = Board.getXPosInPixels(posX);
@@ -180,12 +153,6 @@ public class Tetris extends Canvas implements Runnable {
         // Travel the matrix of blocks of the piece and draw the blocks that are filled
         for (int i = 0; i < Board.PIECE_BLOCKS; i++ ) {
             for (int j = 0; j < Board.PIECE_BLOCKS; j++) {
-                switch (Pieces.getBlockType(pieceKind, pieceRotation, j, i)) {
-                    case 1: pieceColor = new Color(0, 255, 121); break;
-                    // Pivot color
-                    case 2: pieceColor = new Color(255, 250, 250); break;
-                }
-
                 graphics.setColor(pieceColor);
                 if (Pieces.getBlockType(pieceKind, pieceRotation, j, i) != 0) {
                     graphics.fillRect(
@@ -205,13 +172,13 @@ public class Tetris extends Canvas implements Runnable {
         }
     }
 
-    public void drawScene(Graphics2D graphics) {
+    private void drawScene(Graphics2D graphics) {
         drawBoard(graphics);
-        drawPiece(piecePosX, piecePosY, pieceKind, pieceRotation, graphics);
-        drawPiece(nextPiecePosX, nextPiecePosY, nextPieceKind, nextPieceRotation, graphics);
+        drawPiece(piecePosX, piecePosY, pieceKind, pieceRotation, graphics, pieceColor);
+        drawPiece(nextPiecePosX, nextPiecePosY, nextPieceKind, nextPieceRotation, graphics, nextPieceColor);
     }
 
-    public void drawBoard(Graphics2D graphics) {
+    private void drawBoard(Graphics2D graphics) {
         // Calculate the limits of the board in pixels
         int boardXLimit1 = Board.BOARD_POSITION - (Board.BLOCK_SIZE * (Board.BOARD_WIDTH / 2)) - 1;
         int boardXLimit2 = Board.BOARD_POSITION + (Board.BLOCK_SIZE * (Board.BOARD_WIDTH / 2));
@@ -226,7 +193,7 @@ public class Tetris extends Canvas implements Runnable {
         boardXLimit1++;
         for (int i = 0; i < Board.BOARD_WIDTH; i++) {
             for (int j = 0; j < Board.BOARD_HEIGHT; j++) {
-                graphics.setColor(new Color(Math.min(i * i * 10, 255), Math.min(j * 25, 255), Math.min(i * j, 255)));
+                graphics.setColor(new Color(Math.min(i * i * 5, 255), Math.min(j * 25, 255), Math.min(i * j, 255)));
                 // Check if the block is filled, if so, draw it
                 if (!Board.isFreeBlock(i, j)) {
                     graphics.fillRect(
@@ -240,7 +207,8 @@ public class Tetris extends Canvas implements Runnable {
         }
     }
 
-    public void render(Graphics2D graphics) {
+    private void render(Graphics2D graphics) {
+
         graphics.setColor(Color.BLACK);
         graphics.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
         drawScene(graphics);
@@ -260,13 +228,10 @@ public class Tetris extends Canvas implements Runnable {
         return System.nanoTime() - time > 250000000;
     }
 
-    public static void movePiece(int x, int y) {
-        if (Board.isPossibleMovement(piecePosX + x, piecePosY + y, pieceKind, pieceRotation)) {
+    public static void movePiece(int x) {
+        if (Board.isPossibleMovement(piecePosX + x, piecePosY, pieceKind, pieceRotation)) {
             if (x != 0) {
                 piecePosX += x;
-            }
-            if (y != 0) {
-                piecePosY += y;
             }
         }
     }

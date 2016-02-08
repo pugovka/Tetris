@@ -4,42 +4,37 @@ package Tetris;
  * Created by Nat-nyan on 03.01.2016.
  */
 public class Pieces {
-    /*
-    ======================================
-    Return the type of a block (0 = no-block, 1 = normal block, 2 = pivot block)
+    /**
+    * Returns the type of a block (0 = no-block, 1 = normal block, 2 = pivot block)
 
-    Parameters:
+    * Parameters:
 
-    >> piecePosX:            Horizontal position in blocks
-    >> piecePosY:            Vertical position in blocks
-    ======================================
+    * piecePosX:            Horizontal position in blocks
+    * piecePosY:            Vertical position in blocks
     */
     public static int getBlockType(int pieceKind, int pieceRotation, int piecePosX, int piecePosY) {
         return pieces [pieceKind][pieceRotation][piecePosX][piecePosY];
     }
 
-    /*
-    ======================================
-    Returns the horizontal displacement of the piece that has to be applied in order to create it in the
-    correct position.
-    ======================================
+    /**
+    * Returns the horizontal displacement of the piece that has to be applied in order to create it in the
+    * correct position.
     */
     public static int getXInitialPosition(int pieceKind, int pieceRotation) {
         return piecesInitialPosition [pieceKind][pieceRotation][0];
     }
 
-    /*
-    ======================================
-    Returns the vertical displacement of the piece that has to be applied in order to create it in the
-    correct position.
-    ======================================
+    /**
+    * Returns the vertical displacement of the piece that has to be applied in order to create it in the
+    * correct position.
     */
     public static int getYInitialPosition(int pieceKind, int pieceRotation) {
         return piecesInitialPosition [pieceKind][pieceRotation][1];
     }
 
-    // Pieces definition
-    // kind, rotations, horizontal blocks, vertical blocks
+    /** Pieces definition
+    * kind, rotations, horizontal blocks, vertical blocks
+    */
     private static char[][][][] pieces = new char[][][][] {
             // square
             {
